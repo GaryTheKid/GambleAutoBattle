@@ -62,7 +62,6 @@ public class BattleVisualizer_Client : MonoBehaviour
         foreach (var kvp in unitDict)
         {
             ushort unitId = kvp.Key;
-
             if (!unitTransforms.ContainsKey(unitId)) // Unit does not exist, spawn it
             {
                 GameObject obj = Instantiate(pref);
@@ -90,7 +89,6 @@ public class BattleVisualizer_Client : MonoBehaviour
         foreach (ushort unitId in unitsToRemove)
         {
             // TODO: Spawn a dead body replica of this unit, and run death animation
-
             unitTransforms.Remove(unitId);
         }
 

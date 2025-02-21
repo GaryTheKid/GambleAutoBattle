@@ -441,7 +441,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 2272360303
+  GlobalObjectIdHash: 4005130052
   InScenePlacedSourceGlobalObjectIdHash: 2272360303
   DeferredDespawnTick: 0
   Ownership: 1
@@ -572,6 +572,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  teamID: 0
+  teamId: 0
   speed: 0.05
+  hpMax: 500
   hp: 500
+  hpFill: {fileID: 8966830806687614119}
+  hpText: {fileID: 154181419106518271}

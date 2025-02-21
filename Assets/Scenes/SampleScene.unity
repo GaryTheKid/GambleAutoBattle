@@ -1778,6 +1778,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
+  championTeam1: {fileID: 0}
+  championTeam2: {fileID: 0}
 --- !u!114 &807784154
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1988,6 +1990,52 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 841403421}
   m_CullTransparentMesh: 1
+--- !u!1 &1120812456
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1120812457}
+  - component: {fileID: 1120812458}
+  m_Layer: 0
+  m_Name: '[System] ResourceAssets'
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1120812457
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1120812456}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1120812458
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1120812456}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6df0d26137dc7f44bf0f8bdc877d8d6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  allUnitData:
+  - {fileID: 11400000, guid: 9c266924e42b7424181c228aeaae6b4d, type: 2}
 --- !u!1 &1141719785
 GameObject:
   m_ObjectHideFlags: 0
@@ -3247,6 +3295,7 @@ SceneRoots:
   m_Roots:
   - {fileID: 139045280}
   - {fileID: 2069225572}
+  - {fileID: 1120812457}
   - {fileID: 299103988}
   - {fileID: 807784152}
   - {fileID: 1175837702}

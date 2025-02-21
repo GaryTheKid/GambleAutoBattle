@@ -23,11 +23,11 @@ public class UnitSpawner : NetworkBehaviour
         }
     }
 
-    public void SpawnUnit(Vector2 position, ushort hp, bool team)
+    public void SpawnUnit(Vector2 position, ushort hp, bool team, byte unitType)
     {
         if (unitIdPool.TryGetId(out ushort unitId))
         {
-            units[unitId] = new UnitState(unitId, position, hp, team);
+            units[unitId] = new UnitState(unitId, position, hp, team, false, unitType);
         }
         else
         {
@@ -63,11 +63,11 @@ public class UnitSpawner : NetworkBehaviour
         {
             if (teamId == 1)
             {
-                SpawnUnit(new Vector2(60, 4 * i - count * 2 + Random.Range(-5, 5)), 100, teamId != 1);
+                SpawnUnit(new Vector2(60, 4 * i - count * 2 + Random.Range(-5, 5)), 100, teamId != 1, 0);
             }
             else
             {
-                SpawnUnit(new Vector2(-60, 4 * i - count * 2 + Random.Range(-5, 5)), 100, teamId != 1);
+                SpawnUnit(new Vector2(-60, 4 * i - count * 2 + Random.Range(-5, 5)), 100, teamId != 1, 0);
             }
         }
     }
