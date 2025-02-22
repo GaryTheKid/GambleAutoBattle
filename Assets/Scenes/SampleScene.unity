@@ -328,7 +328,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c10e19d893062ac47b845e40fb7b211d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pref: {fileID: 2310556834816511740, guid: 41d063d8361cc1645a17c6a0294f272e, type: 3}
 --- !u!1 &139045279
 GameObject:
   m_ObjectHideFlags: 0
@@ -1596,6 +1595,78 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 481654890}
   m_CullTransparentMesh: 1
+--- !u!1 &597598857
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 597598858}
+  - component: {fileID: 597598860}
+  - component: {fileID: 597598859}
+  m_Layer: 0
+  m_Name: '[System] GameManager'
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &597598858
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 597598857}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &597598859
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 597598857}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 61b3a062ea988d345b94135b2b2ead23, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  teamId: 0
+--- !u!114 &597598860
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 597598857}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 2870186297
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
 --- !u!1 &668373550
 GameObject:
   m_ObjectHideFlags: 0
@@ -2034,6 +2105,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6df0d26137dc7f44bf0f8bdc877d8d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  allTeamColors:
+  - {r: 0, g: 0, b: 1, a: 1}
+  - {r: 1, g: 0, b: 0, a: 1}
+  allChampionPrefs:
+  - {fileID: 8755122383330612590, guid: f24dc2bbd1a89c04c8f1d5d4ffdce944, type: 3}
   allUnitData:
   - {fileID: 11400000, guid: 9c266924e42b7424181c228aeaae6b4d, type: 2}
 --- !u!1 &1141719785
@@ -3046,7 +3122,7 @@ MonoBehaviour:
   NetworkConfig:
     ProtocolVersion: 0
     NetworkTransport: {fileID: 2069225570}
-    PlayerPrefab: {fileID: 8755122383330612590, guid: f24dc2bbd1a89c04c8f1d5d4ffdce944, type: 3}
+    PlayerPrefab: {fileID: 381088775391466410, guid: baff1b4693ecb0947bd872e2d66c7649, type: 3}
     Prefabs:
       NetworkPrefabsLists:
       - {fileID: 11400000, guid: b8e3981f25a0025429fc8894b2f0e088, type: 2}
@@ -3297,6 +3373,7 @@ SceneRoots:
   - {fileID: 2069225572}
   - {fileID: 1120812457}
   - {fileID: 299103988}
+  - {fileID: 597598858}
   - {fileID: 807784152}
   - {fileID: 1175837702}
   - {fileID: 81170427}

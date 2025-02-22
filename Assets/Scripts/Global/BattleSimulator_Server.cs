@@ -23,10 +23,10 @@ public class BattleSimulator_Server : NetworkBehaviour
     private Dictionary<ushort, int> damageQueue = new Dictionary<ushort, int>(); // Stores damage dealt but not applied immediately
 
 
-    public const ushort championIdTeam1 = 10000;
-    public const ushort championIdTeam2 = 10001;
+    public const ushort championIdTeam0 = 10000;
+    public const ushort championIdTeam1 = 10001;
+    public ChampionController championTeam0;
     public ChampionController championTeam1;
-    public ChampionController championTeam2;
     private Dictionary<ushort, ChampionController> champions = new Dictionary<ushort, ChampionController>();
 
     private void Awake()
@@ -52,25 +52,19 @@ public class BattleSimulator_Server : NetworkBehaviour
         BroadcastSnapshots();
     }
 
-    #region === Setup === 
-    public void SetChampion(ChampionController championController, bool teamId)
+    public void SetChampionForSimulation(ChampionController championController, byte teamId)
     {
-        if (teamId)
+        if (teamId == 0)
         {
-            championTeam1 = championController;
-            champions[championIdTeam1] = championTeam1;
-
-            print(championIdTeam1);
+            championTeam0 = championController;
+            champions[championIdTeam0] = championTeam0;
         }
         else
         {
-            championTeam2 = championController;
-            champions[championIdTeam2] = championTeam2;
-
-            print(championIdTeam2);
+            championTeam1 = championController;
+            champions[championIdTeam1] = championTeam1;
         }
     }
-    #endregion
 
     #region === Battle Simulation ===
     private void SimulateBattle_Champion()
@@ -114,8 +108,8 @@ public class BattleSimulator_Server : NetworkBehaviour
 
 
         /////////////////////////////// Finding Champion //////////////////////////////////
-        var targetChampion = (championId == championIdTeam1) ? championTeam2 : championTeam1;
-        var targetChampionId = (championId == championIdTeam1) ? championIdTeam2 : championIdTeam1;
+        var targetChampion = (championId == championIdTeam0) ? championTeam1 : championTeam0;
+        var targetChampionId = (championId == championIdTeam0) ? championIdTeam1 : championIdTeam0;
         if (targetEnemyId == null && targetChampion != null) // did not find any unit, search for a champion
         {
             float distance = Vector2.Distance(champion.GetPositionXZ(), targetChampion.GetPositionXZ());
@@ -134,7 +128,7 @@ public class BattleSimulator_Server : NetworkBehaviour
 
         /////////////////////////////// Attacking Units //////////////////////////////////
         ushort targetEnemyNonEmptyId = (ushort)targetEnemyId;
-        if (targetEnemyNonEmptyId != championIdTeam1 && targetEnemyNonEmptyId != championIdTeam2) // if the target is no enemy champion
+        if (targetEnemyNonEmptyId != championIdTeam0 && targetEnemyNonEmptyId != championIdTeam1) // if the target is no enemy champion
         {
             var targetEnemyUnit = units[targetEnemyNonEmptyId];
             if (closestDistance <= champion.attackRange) // In attack range
@@ -222,7 +216,7 @@ public class BattleSimulator_Server : NetworkBehaviour
         ushort? targetEnemyId = null;
 
         closestDistance = float.MaxValue;
-        UnitData unitData = ResourceAssets.Instance.unitDataDict[unit.GetUnitType()];
+        UnitData unitData = ResourceAssets.Instance.GetUnitData(unit.GetUnitType());
 
         /////////////////////////////// Finding Unit //////////////////////////////////
         foreach (var enemyKey in keys)
@@ -246,19 +240,19 @@ public class BattleSimulator_Server : NetworkBehaviour
 
 
 
-        /////////////////////////////// Targeting Champion //////////////////////////////////
+        /////////////////////////////// Finding Champion //////////////////////////////////
         // check if enemy champion is close enough
-        if (unit.GetTeamId() != championTeam1.teamId.Value) 
+        if (unit.GetTeamId() != championTeam0.teamId.Value) 
         {
-            float distance = Vector2.Distance(unit.GetPosition(), championTeam2.GetPositionXZ());
+            float distance = Vector2.Distance(unit.GetPosition(), championTeam0.GetPositionXZ());
 
             if (distance < closestDistance && distance < unitData.detectionRange)
             {
                 closestDistance = distance;
-                targetEnemyId = championIdTeam2;
+                targetEnemyId = championIdTeam0;
             }
         }
-        if (unit.GetTeamId() != championTeam2.teamId.Value)
+        if (unit.GetTeamId() != championTeam1.teamId.Value)
         {
             float distance = Vector2.Distance(unit.GetPosition(), championTeam1.GetPositionXZ());
 
@@ -275,11 +269,11 @@ public class BattleSimulator_Server : NetworkBehaviour
 
     private void SimulateUnit_HandleCombatOrMovement(ref UnitState unit, ushort targetEnemyId, float closestDistance, ref bool isAttacking, ref bool isFighting, ref Vector2 finalVelocity, Dictionary<ushort, int> damageQueue)
     {
-        UnitData unitData = ResourceAssets.Instance.unitDataDict[unit.GetUnitType()];
+        UnitData unitData = ResourceAssets.Instance.GetUnitData(unit.GetUnitType());
 
         /////////////////////////////// Targeting Champion //////////////////////////////////
-        bool isTargetChampion = (targetEnemyId == championIdTeam1 || targetEnemyId == championIdTeam2);
-        var targetChampion = (targetEnemyId == championIdTeam1) ? championTeam1 : championTeam2;
+        bool isTargetChampion = (targetEnemyId == championIdTeam0 || targetEnemyId == championIdTeam1);
+        var targetChampion = (targetEnemyId == championIdTeam0) ? championTeam0 : championTeam1;
 
         if (isTargetChampion) // lock champion
         {
@@ -345,14 +339,13 @@ public class BattleSimulator_Server : NetworkBehaviour
 
     private void SimulateUnit_HandleIdleMovement(ref UnitState unit, ref Vector2 finalVelocity)
     {
-        UnitData unitData = ResourceAssets.Instance.unitDataDict[unit.GetUnitType()];
-        finalVelocity += new Vector2(unit.GetTeamId() ? unitData.unitSpeed : -unitData.unitSpeed, 0f);
+        finalVelocity += unit.GetDafaultMovement();
     }
 
     private void SimulateUnit_ApplyRepulsionForces(ushort unitId, UnitState unit, bool isAttacking, ref Vector2 finalVelocity)
     {
         var keys = units.Keys;
-        UnitData unitData = ResourceAssets.Instance.unitDataDict[unit.GetUnitType()];
+        UnitData unitData = ResourceAssets.Instance.GetUnitData(unit.GetUnitType());
         float repulsionFactor = isAttacking ? unitData.repulsionStrengthCombatModifier : unitData.repulsionStrengthIdleModifier; // Reduce repulsion if attacking
 
         foreach (var otherKey in keys)
@@ -387,14 +380,14 @@ public class BattleSimulator_Server : NetworkBehaviour
     private void SimulateBattle_ApplyQueuedDamage(Dictionary<ushort, int> damageQueue)
     {
         /////////////////////////////// Apply Damage to Champion //////////////////////////////////
-        if (damageQueue.TryGetValue(championIdTeam1, out int damageToChampion1) && damageToChampion1 != 0) 
+        if (damageQueue.TryGetValue(championIdTeam0, out int damageToChampion1) && damageToChampion1 != 0) 
         {
-            championTeam1.TakeDamage((ushort)(damageToChampion1));
+            championTeam0.TakeDamage((ushort)(damageToChampion1));
         }
 
-        if (damageQueue.TryGetValue(championIdTeam2, out int damageToChampion2) && damageToChampion2 != 0)
+        if (damageQueue.TryGetValue(championIdTeam1, out int damageToChampion2) && damageToChampion2 != 0)
         {
-            championTeam2.TakeDamage((ushort)(damageToChampion2));
+            championTeam1.TakeDamage((ushort)(damageToChampion2));
         }
         /////////////////////////////// Apply Damage to Champion //////////////////////////////////
 
@@ -403,7 +396,7 @@ public class BattleSimulator_Server : NetworkBehaviour
         /////////////////////////////// Apply Damage to Units //////////////////////////////////
         foreach (var key in damageQueue.Keys)
         {
-            if (key == championIdTeam1 || key == championIdTeam2) continue;
+            if (key == championIdTeam0 || key == championIdTeam1) continue;
 
             if (units.TryGetValue(key, out var unit))
             {

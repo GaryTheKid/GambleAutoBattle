@@ -19,4 +19,7 @@ public class UnitData : ScriptableObject
     public float repulsionStrengthCombatModifier = 0.1f;
     public float repulsionStrengthIdleModifier = 0.4f;
     public float unitSpeed = 0.1f;                          // Base movement speed
+
+    [Header("Resources")]
+    public GameObject pref;
 }

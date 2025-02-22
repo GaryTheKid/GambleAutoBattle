@@ -9,7 +9,7 @@ public struct UnitState : INetworkSerializable
 {
     [FieldOffset(0)] public ulong PackedData;
 
-    public UnitState(ushort id, Vector2 position, ushort hp, bool teamId, bool isAttacking, byte unitType)
+    public UnitState(ushort id, Vector2 position, ushort hp, byte teamId, bool isAttacking, byte unitType)
     {
         PackedData = 0;
 
@@ -19,7 +19,7 @@ public struct UnitState : INetworkSerializable
         ulong posYPart = (ulong)Float16Converter.PackFloat(position.y); // 16 bits
         ulong hpPart = (ulong)(hp & 0x7FF); // 11 bits
         ulong isAttackingPart = (ulong)(isAttacking ? 1 : 0); // 1 bit
-        ulong teamPart = (ulong)(teamId ? 1 : 0); // 1 bit
+        ulong teamPart = (ulong)(teamId); // 1 bit
 
         PackedData =
             (idPart << 53) |
@@ -40,7 +40,10 @@ public struct UnitState : INetworkSerializable
     );
     public ushort GetHP() => (ushort)((PackedData >> 2) & 0x7FF);
     public bool GetIsAttacking() => ((PackedData >> 1) & 0x1) == 1;
-    public bool GetTeamId() => (PackedData & 0x1) == 1;
+    public byte GetTeamId() => (byte)(PackedData & 0x1);
+    public Vector2 GetDafaultMovement() => new Vector2(GetTeamId() == 0 ? 
+        - ResourceAssets.Instance.GetUnitData(GetUnitType()).unitSpeed : ResourceAssets.Instance.GetUnitData(GetUnitType()).unitSpeed, 
+        0f);
 
     public void SetPosition(Vector2 newPos)
     {

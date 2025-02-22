@@ -8,16 +8,9 @@ public class UnitGameObject : MonoBehaviour
     [SerializeField] private TextMeshProUGUI hpText;
     [SerializeField] private MeshRenderer meshRenderer;
 
-    public void UpdateTeam(bool teamId)
+    public void UpdateTeam(byte teamId)
     {
-        if (teamId)
-        {
-            meshRenderer.material.color = Color.red;
-        }
-        else
-        {
-            meshRenderer.material.color = Color.blue;
-        }
+        meshRenderer.material.color = ResourceAssets.Instance.GetTeamColor(teamId);
     }
 
     public void UpdateHp(float hp, float maxHp)

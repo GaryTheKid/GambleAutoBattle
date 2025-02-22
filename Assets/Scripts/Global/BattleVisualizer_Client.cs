@@ -12,8 +12,6 @@ using UnityEngine;
 
 public class BattleVisualizer_Client : MonoBehaviour
 {
-    public GameObject pref;
-
     public static BattleVisualizer_Client Instance;
     private Dictionary<ushort, Transform> unitTransforms = new Dictionary<ushort, Transform>();
     private FixedSizeQueue<Snapshot> snapshotBuffer;
@@ -64,7 +62,8 @@ public class BattleVisualizer_Client : MonoBehaviour
             ushort unitId = kvp.Key;
             if (!unitTransforms.ContainsKey(unitId)) // Unit does not exist, spawn it
             {
-                GameObject obj = Instantiate(pref);
+                UnitData unitData = ResourceAssets.Instance.GetUnitData(kvp.Value.GetUnitType());
+                GameObject obj = Instantiate(unitData.pref);
                 obj.transform.position = new Vector3(kvp.Value.GetPosition().x, 0, kvp.Value.GetPosition().y);
                 obj.GetComponent<UnitGameObject>().UpdateTeam(kvp.Value.GetTeamId());
                 unitTransforms[unitId] = obj.transform;

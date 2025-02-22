@@ -23,7 +23,7 @@ public class UnitSpawner : NetworkBehaviour
         }
     }
 
-    public void SpawnUnit(Vector2 position, ushort hp, bool team, byte unitType)
+    public void SpawnUnit(Vector2 position, ushort hp, byte team, byte unitType)
     {
         if (unitIdPool.TryGetId(out ushort unitId))
         {
@@ -47,7 +47,9 @@ public class UnitSpawner : NetworkBehaviour
 
     public void testspawn()
     {
-        RequestSpawnUnitsServerRpc(5, (byte)NetworkManager.Singleton.LocalClientId);
+        RequestSpawnUnitsServerRpc(5, GameManager.Instance.teamId);
+
+        print(GameManager.Instance.teamId);
     }
 
     public void testdestroy()
@@ -63,11 +65,11 @@ public class UnitSpawner : NetworkBehaviour
         {
             if (teamId == 1)
             {
-                SpawnUnit(new Vector2(60, 4 * i - count * 2 + Random.Range(-5, 5)), 100, teamId != 1, 0);
+                SpawnUnit(new Vector2(-60, 4 * i - count * 2 + Random.Range(-5, 5)), 100, teamId, 0);
             }
             else
             {
-                SpawnUnit(new Vector2(-60, 4 * i - count * 2 + Random.Range(-5, 5)), 100, teamId != 1, 0);
+                SpawnUnit(new Vector2(60, 4 * i - count * 2 + Random.Range(-5, 5)), 100, teamId, 0);
             }
         }
     }

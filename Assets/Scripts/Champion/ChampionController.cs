@@ -6,15 +6,15 @@ using TMPro;
 public class ChampionController : NetworkBehaviour
 {
     [Header("Stats")]
-    public NetworkVariable<bool> teamId = new NetworkVariable<bool>() { };
+    public NetworkVariable<byte> teamId = new NetworkVariable<byte>() { };
     public NetworkVariable<float> speed = new NetworkVariable<float>(5f);
     public NetworkVariable<ushort> damage = new NetworkVariable<ushort>(50);
     public NetworkVariable<ushort> hpMax = new NetworkVariable<ushort>(500);
     public NetworkVariable<ushort> hp = new NetworkVariable<ushort>(500);
 
     [Header("Indentity")]
-    public byte unitId;
-    public string unitName = "Default Unit";
+    public byte championId;
+    public string championName = "Default Champion";
     
     [Header("Combat Settings")]
     public float attackRange = 5.0f;            // Minimum distance to attack
@@ -48,7 +48,9 @@ public class ChampionController : NetworkBehaviour
         hpMax.OnValueChanged += (oldValue, newValue) => UpdateHpUI(hp.Value);
 
         if(IsOwner)
-            UpdateTeamServerRpc((byte)OwnerClientId);
+            UpdateTeamServerRpc(GameManager.Instance.teamId);
+        if(!IsOwner && !IsServer)
+            UpdateTeamVisual(teamId.Value);
     }
 
     void Update()
@@ -65,31 +67,22 @@ public class ChampionController : NetworkBehaviour
     [ServerRpc]
     public void UpdateTeamServerRpc(byte teamId)
     {
-        bool isBlueTeam = (teamId == 1);
-        this.teamId.Value = isBlueTeam;
-        UpdateTeamVisual(isBlueTeam);
-        BattleSimulator_Server.Instance.SetChampion(this, isBlueTeam);
+        print("update team id" + teamId);
+        this.teamId.Value = teamId;
+        UpdateTeamVisual(teamId);
+        BattleSimulator_Server.Instance.SetChampionForSimulation(this, teamId);
         UpdateTeamClientRpc(teamId);
     }
 
     [ClientRpc]
     private void UpdateTeamClientRpc(byte teamId)
     {
-        bool isBlueTeam = (teamId == 1);
-        UpdateTeamVisual(isBlueTeam);
-        BattleSimulator_Server.Instance.SetChampion(this, isBlueTeam);
+        UpdateTeamVisual(teamId);
     }
 
-    private void UpdateTeamVisual(bool isBlueTeam)
+    private void UpdateTeamVisual(byte teamId)
     {
-        if (isBlueTeam)
-        {
-            meshRenderer.material.color = Color.blue;
-        }
-        else
-        {
-            meshRenderer.material.color = Color.red;
-        }
+        meshRenderer.material.color = ResourceAssets.Instance.GetTeamColor(teamId);
     }
 
     public void TakeDamage(ushort damage)
@@ -97,6 +90,18 @@ public class ChampionController : NetworkBehaviour
         if (!IsServer) return;
         ushort newHp = (ushort)Mathf.Max(hp.Value - damage, 0);
         hp.Value = newHp;
+
+        if (hp.Value <= 0)
+        {
+            Die();
+        }
+    }
+
+    private void Die()
+    {
+        // reset all
+        hp.Value = hpMax.Value;
+        transform.position = new Vector2(teamId.Value==0 ? 60f : -60f,  0f);
     }
 
     private void UpdateHpUI(ushort newHp)
