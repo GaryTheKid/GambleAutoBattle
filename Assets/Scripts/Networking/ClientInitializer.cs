@@ -42,7 +42,7 @@ public class ClientInitializer : NetworkBehaviour
     private void RequestChampionSpawnServerRpc(ulong clientId, byte teamId)
     {
         GameObject championPrefab = ResourceAssets.Instance.GetChampionPref(0);
-        GameObject championInstance = Instantiate(championPrefab, new Vector2(teamId==0? 60f : -60f, 0f), Quaternion.identity);
+        GameObject championInstance = Instantiate(championPrefab, teamId==0 ? UnitSpawner.Instance.championSpawnPos_Team0.position : UnitSpawner.Instance.championSpawnPos_Team1.position, Quaternion.identity);
 
         if (championInstance.TryGetComponent(out NetworkObject networkObject))
         {

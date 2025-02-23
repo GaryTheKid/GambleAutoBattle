@@ -143,8 +143,6 @@ public class BattleSimulator_Server : NetworkBehaviour
                         damageQueue[targetEnemyUnit.GetId()] = 0;
                     damageQueue[targetEnemyUnit.GetId()] += champion.damage.Value;
 
-                    print(targetEnemyUnit.GetId());
-
                     lastAttackTime[championId] = Time.time; // Reset attack cooldown
                 }
             }

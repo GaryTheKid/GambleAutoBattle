@@ -60,12 +60,13 @@ public class BattleVisualizer_Client : MonoBehaviour
         foreach (var kvp in unitDict)
         {
             ushort unitId = kvp.Key;
+            UnitState unitState = kvp.Value;
             if (!unitTransforms.ContainsKey(unitId)) // Unit does not exist, spawn it
             {
-                UnitData unitData = ResourceAssets.Instance.GetUnitData(kvp.Value.GetUnitType());
+                UnitData unitData = ResourceAssets.Instance.GetUnitData(unitState.GetUnitType());
                 GameObject obj = Instantiate(unitData.pref);
-                obj.transform.position = new Vector3(kvp.Value.GetPosition().x, 0, kvp.Value.GetPosition().y);
-                obj.GetComponent<UnitGameObject>().UpdateTeam(kvp.Value.GetTeamId());
+                obj.transform.position = new Vector3(unitState.GetPosition().x, 0, unitState.GetPosition().y);
+                obj.GetComponent<UnitGameObject>().UpdateTeam(unitState.GetTeamId());
                 unitTransforms[unitId] = obj.transform;
 
                 // TODO: add a spawn animation
