@@ -143,7 +143,11 @@ public class BattleSimulator_Server : NetworkBehaviour
                         damageQueue[targetEnemyUnit.GetId()] = 0;
                     damageQueue[targetEnemyUnit.GetId()] += champion.damage.Value;
 
-                    lastAttackTime[championId] = Time.time; // Reset attack cooldown
+                    // play attack animation
+                    //champion.Attack();
+
+                    // Reset attack cooldown
+                    lastAttackTime[championId] = Time.time; 
                 }
             }
         }
@@ -165,7 +169,11 @@ public class BattleSimulator_Server : NetworkBehaviour
                         damageQueue[targetChampionId] = 0;
                     damageQueue[targetChampionId] += champion.damage.Value;
 
-                    lastAttackTime[championId] = Time.time; // Reset attack cooldown
+                    // play attack animation
+                    //champion.Attack();
+
+                    // Reset attack cooldown
+                    lastAttackTime[championId] = Time.time; 
                 }
             }
         }

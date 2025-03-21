@@ -77,6 +77,7 @@ public class ChampionController : NetworkBehaviour
         if (!IsOwner && !IsServer)
         {
             UpdateTeamVisual(teamId.Value);
+            tag = "Enemy";
         }  
     }
 
@@ -88,6 +89,12 @@ public class ChampionController : NetworkBehaviour
             return;
         }
 
+        if (isAttacking)
+        {
+            avatarAnimator.SetInteger("animState", 2);
+            SyncAvaterAnimationStateClientRpc(2);
+        }
+
         if (!IsOwner) return; // Only let the owner control the movement
         if (isDead.Value) return;
         
@@ -96,6 +103,9 @@ public class ChampionController : NetworkBehaviour
 
         Vector3 movement = new Vector3(moveX, 0f, moveY);
         characterController.Move(movement * speed.Value * Time.deltaTime);
+
+
+        if (isAttacking) return;
 
         if (movement.magnitude > 0.01f)
         {
@@ -107,12 +117,28 @@ public class ChampionController : NetworkBehaviour
                 rotationSpeed * Time.deltaTime
             );
 
-            if (!isAttacking) { SyncAvaterAnimationStateServerRpc(1); }
+            SyncAvaterAnimationStateServerRpc(1);
         }
         else
         {
             //avatarAnimator.SetInteger("animState", 0);
-            if (!isAttacking) { SyncAvaterAnimationStateServerRpc(0); }
+            SyncAvaterAnimationStateServerRpc(0);
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Enemy"))
+        {
+            isAttacking = true;
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Enemy"))
+        {
+            isAttacking = false;
         }
     }
 
@@ -151,6 +177,50 @@ public class ChampionController : NetworkBehaviour
         teamIndicator.material.color = ResourceAssets.Instance.GetTeamColor(teamId);
         avatarParent.LookAt(GameObject.Find("BattlefieldCenter").transform);
     }
+
+    /*public void Attack()
+    {
+        isAttacking = true;
+        SyncAvaterAnimationStateServerRpc(2);
+        AttackServerRpc();
+        StartCoroutine(WaitForResetAttack());
+    }
+
+    public IEnumerator WaitForResetAttack()
+    {
+        yield return new WaitForSecondsRealtime(attackCooldown);
+        isAttacking = false;
+        ResetAttackServerRpc();
+    }
+
+    [ServerRpc]
+    public void AttackServerRpc()
+    {
+        isAttacking = true;
+        AttackClientRpc();
+        SyncAvaterAnimationStateServerRpc(2);
+    }
+
+    [ClientRpc]
+    private void AttackClientRpc()
+    {
+        if (!IsOwner)
+            isAttacking = true;
+    }
+
+    [ServerRpc]
+    public void ResetAttackServerRpc()
+    {
+        isAttacking = false;
+        ResetAttackClientRpc();
+    }
+
+    [ClientRpc]
+    private void ResetAttackClientRpc()
+    {
+        if (!IsOwner)
+            isAttacking = false;
+    }*/
 
     public void TakeDamage(ushort damage)
     {

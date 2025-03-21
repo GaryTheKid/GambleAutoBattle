@@ -577,6 +577,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5804764477986725905}
   - component: {fileID: 3522667706194400218}
+  - component: {fileID: 818396029370026443}
   - component: {fileID: 7846848128992108334}
   - component: {fileID: 3419498466510787147}
   - component: {fileID: 9074942898891860881}
@@ -584,7 +585,7 @@ GameObject:
   - component: {fileID: 1825301140527584585}
   m_Layer: 0
   m_Name: PlayerPrefab
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -628,6 +629,27 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.2073071, y: 1.932216, z: 1.1389899}
   m_Center: {x: 0.10365292, y: 0.46610707, z: -0.0047616363}
+--- !u!135 &818396029370026443
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8755122383330612590}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 1.83
+  m_Center: {x: 0, y: 0.86, z: 0}
 --- !u!114 &7846848128992108334
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -743,6 +765,7 @@ MonoBehaviour:
   championId: 0
   championName: Default Champion
   teamIndicator: {fileID: 8583170803378185140}
+  isAttacking: 0
   attackRange: 5
   attackCooldown: 1
   separationDistance: 2.5
