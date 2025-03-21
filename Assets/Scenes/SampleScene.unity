@@ -5874,7 +5874,7 @@ Transform:
   m_GameObject: {fileID: 447719491}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -45, y: 0, z: 0}
+  m_LocalPosition: {x: -102.8, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5963,6 +5963,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1586001368}
   - {fileID: 263149601}
   - {fileID: 1838387845}
   - {fileID: 1180032412}
@@ -7146,6 +7147,10 @@ PrefabInstance:
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: f70a36788d5fbe745af42f9daf25abd5, type: 2}
+    - target: {fileID: 5866666021909216657, guid: 60a987ea0738e4a4095efb6b5b4b8dc2, type: 3}
+      propertyPath: m_ApplyRootMotion
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -15395,7 +15400,7 @@ Transform:
   m_GameObject: {fileID: 1501979172}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 45, y: 0, z: 0}
+  m_LocalPosition: {x: 105.8, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -15981,6 +15986,37 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 480734, guid: b1ad8ef6890687249a641abef8e26baf, type: 3}
   m_PrefabInstance: {fileID: 1579948632}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1586001367
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1586001368}
+  m_Layer: 0
+  m_Name: BattlefieldCenter
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1586001368
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1586001367}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 450392864}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1592263497
 GameObject:
   m_ObjectHideFlags: 0
@@ -21478,7 +21514,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5804764477986725905, guid: f24dc2bbd1a89c04c8f1d5d4ffdce944, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.92387956
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5804764477986725905, guid: f24dc2bbd1a89c04c8f1d5d4ffdce944, type: 3}
       propertyPath: m_LocalRotation.x
@@ -21486,7 +21522,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5804764477986725905, guid: f24dc2bbd1a89c04c8f1d5d4ffdce944, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.38268343
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5804764477986725905, guid: f24dc2bbd1a89c04c8f1d5d4ffdce944, type: 3}
       propertyPath: m_LocalRotation.z
@@ -21498,7 +21534,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5804764477986725905, guid: f24dc2bbd1a89c04c8f1d5d4ffdce944, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: -45
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5804764477986725905, guid: f24dc2bbd1a89c04c8f1d5d4ffdce944, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
@@ -21514,7 +21550,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8755122383330612590, guid: f24dc2bbd1a89c04c8f1d5d4ffdce944, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

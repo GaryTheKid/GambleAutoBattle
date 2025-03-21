@@ -9,17 +9,20 @@ public class ChampionController : NetworkBehaviour
 {
     [Header("Stats")]
     public NetworkVariable<byte> teamId = new NetworkVariable<byte>() { };
-    public NetworkVariable<float> speed = new NetworkVariable<float>(5f);
+    public NetworkVariable<float> speed = new NetworkVariable<float>(10f);
     public NetworkVariable<ushort> damage = new NetworkVariable<ushort>(50);
     public NetworkVariable<ushort> hpMax = new NetworkVariable<ushort>(500);
     public NetworkVariable<ushort> hp = new NetworkVariable<ushort>(500);
     public NetworkVariable<bool> isDead = new NetworkVariable<bool>(false);
+    public float rotationSpeed = 10f;
 
     [Header("Indentity")]
     public byte championId;
     public string championName = "Default Champion";
-    
+    public MeshRenderer teamIndicator;
+
     [Header("Combat Settings")]
+    public bool isAttacking;
     public float attackRange = 5.0f;            // Minimum distance to attack
     public float attackCooldown = 1.0f;         // Time between attacks
     
@@ -29,13 +32,25 @@ public class ChampionController : NetworkBehaviour
     public float repulsionStrengthCombatModifier = 0.1f;
     public float repulsionStrengthIdleModifier = 0.4f;
 
+    [Header("Avatar")]
+    public Transform avatarParent;
+    public Transform avatar;
+    private Animator avatarAnimator;
+    public enum AvatarAnimationState
+    {
+        idle,
+        move,
+        attack
+    }
+    public AvatarAnimationState avatarAnimationState = AvatarAnimationState.idle;
+
+
     [Header("UI")]
     [SerializeField] private Image hpFill;
     [SerializeField] private TextMeshProUGUI hpText;
 
     private NetworkTransform networkTransform;
     private CharacterController characterController;
-    private MeshRenderer meshRenderer;
 
     private float freezeTimer;
 
@@ -43,7 +58,7 @@ public class ChampionController : NetworkBehaviour
     {
         networkTransform = GetComponent<NetworkTransform>();
         characterController = GetComponent<CharacterController>();
-        meshRenderer = GetComponent<MeshRenderer>();
+        avatarAnimator = avatar.GetComponent<Animator>();
     }
 
     public override void OnNetworkSpawn()
@@ -81,6 +96,38 @@ public class ChampionController : NetworkBehaviour
 
         Vector3 movement = new Vector3(moveX, 0f, moveY);
         characterController.Move(movement * speed.Value * Time.deltaTime);
+
+        if (movement.magnitude > 0.01f)
+        {
+            //avatarAnimator.SetInteger("animState", 1);
+            // Rotate avatarParent to face movement direction
+            avatarParent.transform.rotation = Quaternion.Slerp(
+                avatarParent.transform.rotation,
+                Quaternion.LookRotation(movement),
+                rotationSpeed * Time.deltaTime
+            );
+
+            if (!isAttacking) { SyncAvaterAnimationStateServerRpc(1); }
+        }
+        else
+        {
+            //avatarAnimator.SetInteger("animState", 0);
+            if (!isAttacking) { SyncAvaterAnimationStateServerRpc(0); }
+        }
+    }
+
+    [ServerRpc]
+    public void SyncAvaterAnimationStateServerRpc(byte state)
+    {
+        avatarAnimator.SetInteger("animState", state);
+        SyncAvaterAnimationStateClientRpc(state);
+    }
+
+    [ClientRpc]
+    private void SyncAvaterAnimationStateClientRpc(byte state)
+    {
+        if (!IsOwner)
+            avatarAnimator.SetInteger("animState", state);
     }
 
     [ServerRpc]
@@ -101,7 +148,8 @@ public class ChampionController : NetworkBehaviour
 
     private void UpdateTeamVisual(byte teamId)
     {
-        meshRenderer.material.color = ResourceAssets.Instance.GetTeamColor(teamId);
+        teamIndicator.material.color = ResourceAssets.Instance.GetTeamColor(teamId);
+        avatarParent.LookAt(GameObject.Find("BattlefieldCenter").transform);
     }
 
     public void TakeDamage(ushort damage)

@@ -429,8 +429,15 @@ public class BattleSimulator_Server : NetworkBehaviour
 
     private void SendSnapshotToClients()
     {
-        Snapshot snapshot = new Snapshot((float)NetworkManager.Singleton.ServerTime.Time, units);
-        SendSnapshotToClientsClientRpc(snapshot);
+        if (units != null && NetworkManager.Singleton) 
+        {
+            Snapshot snapshot = new Snapshot((float)NetworkManager.Singleton.ServerTime.Time, units);
+            SendSnapshotToClientsClientRpc(snapshot);
+        }
+        else
+        {
+            Debug.LogWarning("Server Disconnected.");
+        }
     }
 
     [ClientRpc]
