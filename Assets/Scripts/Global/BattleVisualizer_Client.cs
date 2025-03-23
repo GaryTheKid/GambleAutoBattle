@@ -81,6 +81,10 @@ public class BattleVisualizer_Client : MonoBehaviour
 
             if (!unitDict.ContainsKey(unitId)) // Unit exists locally but not in snapshot, remove it
             {
+                // Spawn a dead body replica of this unit, and run death animation
+                Transform deadUnitTransform = kvp.Value.transform;
+                deadUnitTransform.GetComponent<UnitGameObject>().Die();
+
                 Destroy(kvp.Value.gameObject);
                 unitsToRemove.Add(unitId);
             }
@@ -88,7 +92,6 @@ public class BattleVisualizer_Client : MonoBehaviour
 
         foreach (ushort unitId in unitsToRemove)
         {
-            // TODO: Spawn a dead body replica of this unit, and run death animation
             unitTransforms.Remove(unitId);
         }
 
@@ -122,7 +125,15 @@ public class BattleVisualizer_Client : MonoBehaviour
 
                     unitTransform.position = Vector3.Lerp(startPos, endPos, t);
 
-                    // TODO: if pos delta is big enough (unit moving), set movement animation bool = true, else = false
+                    // if pos delta is big enough (unit moving), set movement animation bool = true, else = false
+                    if ((endPos - startPos).magnitude > 0.005f)
+                    {
+                        unitTransform.GetComponent<UnitGameObject>().PlayAnimation(1);
+                    }
+                    else
+                    {
+                        unitTransform.GetComponent<UnitGameObject>().PlayAnimation(0);
+                    }
                 }
             }
 

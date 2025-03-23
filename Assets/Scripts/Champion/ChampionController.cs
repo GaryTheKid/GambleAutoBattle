@@ -22,7 +22,7 @@ public class ChampionController : NetworkBehaviour
     public MeshRenderer teamIndicator;
 
     [Header("Combat Settings")]
-    public bool isAttacking;
+    public NetworkVariable<bool> isAttacking = new NetworkVariable<bool>(false);
     public float attackRange = 5.0f;            // Minimum distance to attack
     public float attackCooldown = 1.0f;         // Time between attacks
     
@@ -89,12 +89,6 @@ public class ChampionController : NetworkBehaviour
             return;
         }
 
-        if (isAttacking)
-        {
-            avatarAnimator.SetInteger("animState", 2);
-            SyncAvaterAnimationStateClientRpc(2);
-        }
-
         if (!IsOwner) return; // Only let the owner control the movement
         if (isDead.Value) return;
         
@@ -104,42 +98,78 @@ public class ChampionController : NetworkBehaviour
         Vector3 movement = new Vector3(moveX, 0f, moveY);
         characterController.Move(movement * speed.Value * Time.deltaTime);
 
-
-        if (isAttacking) return;
-
-        if (movement.magnitude > 0.01f)
+        // animations
+        if (isAttacking.Value)
         {
-            //avatarAnimator.SetInteger("animState", 1);
-            // Rotate avatarParent to face movement direction
-            avatarParent.transform.rotation = Quaternion.Slerp(
-                avatarParent.transform.rotation,
-                Quaternion.LookRotation(movement),
-                rotationSpeed * Time.deltaTime
-            );
-
-            SyncAvaterAnimationStateServerRpc(1);
+            avatarAnimator.SetInteger("animState", 2);
+            SyncAvaterAnimationStateServerRpc(2);
         }
         else
         {
-            //avatarAnimator.SetInteger("animState", 0);
-            SyncAvaterAnimationStateServerRpc(0);
+            if (movement.magnitude > 0.01f)
+            {
+                avatarAnimator.SetInteger("animState", 1);
+                SyncAvaterAnimationStateServerRpc(1);
+
+                // Rotate avatarParent to face movement direction
+                avatarParent.transform.rotation = Quaternion.Slerp(
+                    avatarParent.transform.rotation,
+                    Quaternion.LookRotation(movement),
+                    rotationSpeed * Time.deltaTime
+                );
+            }
+            else
+            {
+                avatarAnimator.SetInteger("animState", 0);
+                SyncAvaterAnimationStateServerRpc(0);
+            }
         }
     }
 
     private void OnTriggerEnter(Collider other)
     {
+        if (!IsOwner) return;
+
         if (other.CompareTag("Enemy"))
         {
-            isAttacking = true;
+            SyncAttackStateServerRpc(true);
+        }
+        else
+        {
+            var enemyUnit = other.GetComponent<UnitGameObject>();
+            if (enemyUnit != null && enemyUnit.teamId != teamId.Value)
+            {
+                SyncAttackStateServerRpc(true);
+            }
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
+        if (!IsOwner) return;
+
         if (other.CompareTag("Enemy"))
         {
-            isAttacking = false;
+            SyncAttackStateServerRpc(false);
         }
+        else
+        {
+            var enemyUnit = other.GetComponent<UnitGameObject>();
+            if (enemyUnit != null && enemyUnit.teamId != teamId.Value)
+            {
+                SyncAttackStateServerRpc(false);
+            }
+            else if (enemyUnit == null)
+            {
+                SyncAttackStateServerRpc(false);
+            }
+        }
+    }
+
+    [ServerRpc]
+    public void SyncAttackStateServerRpc(bool isAttacking)
+    {
+        this.isAttacking.Value = isAttacking;
     }
 
     [ServerRpc]
