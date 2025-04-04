@@ -16,4 +16,9 @@ public class GameManager : NetworkBehaviour
             Instance = this;
         }
     }
+
+    #region === Commander - Troop ===
+
+
+    #endregion
 }
