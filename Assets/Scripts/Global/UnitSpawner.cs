@@ -6,6 +6,11 @@ public class UnitSpawner : NetworkBehaviour
 {
     public static UnitSpawner Instance { get; private set; }
 
+    [Header("Base Spawn Pos")]
+    public Transform baseSpawnPos_Team0;
+    public Transform baseSpawnPos_Team1;
+
+    [Header("Champion Spawn Pos")]
     public Transform championSpawnPos_Team0;
     public Transform championSpawnPos_Team1;
 
@@ -28,20 +33,31 @@ public class UnitSpawner : NetworkBehaviour
 
     private void Update()
     {
+        if (GameManager.Instance.CurrentGameState != GameState.InBattle)
+            return;
+
         if (Input.GetMouseButtonDown(0)) // Left mouse click
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-
-            if (Physics.Raycast(ray, out hit)) // Check if we hit something
+            if (Physics.Raycast(ray, out RaycastHit hit))
             {
-                if (hit.collider.CompareTag("SpawnRegion")) // Ensure it's a valid spawn area
+                if (hit.collider.CompareTag("SpawnRegion"))
                 {
-                    byte teamId = hit.collider.transform.GetComponent<SpawnRegion>().teamId;
-                    if (teamId != GameManager.Instance.teamId) return;
+                    byte teamId = hit.collider.GetComponent<SpawnRegion>().teamId;
+                    if (teamId != GameManager.Instance.teamId)
+                        return;
 
-                    Vector2 spawnPos = new Vector2(hit.point.x, hit.point.z); // Convert to 2D position
-                    RequestSpawnUnitAtPositionServerRpc(5, spawnPos, GameManager.Instance.teamId);
+                    // Attempt to use the selected card
+                    CardData cardData = DeckManager.Instance.UseSelectedCard();
+                    if (cardData == null)
+                        return;
+                    else
+                    {
+                        print(132);
+                    }
+
+                    Vector2 spawnPos = new Vector2(hit.point.x, hit.point.z);
+                    RequestSpawnCardUnitsServerRpc(cardData.amount, spawnPos, teamId, cardData.unitType);
                 }
             }
         }
@@ -103,14 +119,17 @@ public class UnitSpawner : NetworkBehaviour
     {
         for (int i = 0; i < count; i++)
         {
-            if (teamId == 1)
-            {
-                SpawnUnit(spawnPos + new Vector2(Random.Range(-5, 5), Random.Range(-5, 5)), 100, teamId, 0);
-            }
-            else
-            {
-                SpawnUnit(spawnPos + new Vector2(Random.Range(-5, 5), Random.Range(-5, 5)), 100, teamId, 0);
-            }
+            SpawnUnit(spawnPos + new Vector2(Random.Range(-5, 5), Random.Range(-5, 5)), 100, teamId, 0);
+        }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void RequestSpawnCardUnitsServerRpc(byte count, Vector2 spawnPos, byte teamId, byte unitType)
+    {
+        for (int i = 0; i < count; i++)
+        {
+            Vector2 offset = new Vector2(Random.Range(-5, 5), Random.Range(-5, 5));
+            SpawnUnit(spawnPos + offset, 100, teamId, unitType);
         }
     }
 

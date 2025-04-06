@@ -15,6 +15,11 @@ public class BattleSimulator_Server : NetworkBehaviour
 {
     public static BattleSimulator_Server Instance;
 
+    // simulation flag
+    private bool isSimulating = false;
+    private bool isGameReady = false;
+
+    // units
     private float lastSnapshotTime = 0f;
     private const float SnapshotInterval = 0.05f; // 50ms per update
     private Dictionary<ushort, UnitState> units;
@@ -22,13 +27,50 @@ public class BattleSimulator_Server : NetworkBehaviour
     private Dictionary<ushort, Vector2> velocityChanges = new Dictionary<ushort, Vector2>(); // Stores movement updates
     private Dictionary<ushort, int> damageQueue = new Dictionary<ushort, int>(); // Stores damage dealt but not applied immediately
 
-
+    // champions
     public const ushort championIdTeam0 = 10000;
     public const ushort championIdTeam1 = 10001;
-    public ChampionController championTeam0;
-    public ChampionController championTeam1;
+    [HideInInspector] public ChampionController championTeam0;
+    [HideInInspector] public ChampionController championTeam1;
     private Dictionary<ushort, ChampionController> champions = new Dictionary<ushort, ChampionController>();
 
+    // bases
+    public const ushort baseIdTeam0 = 20000;
+    public const ushort baseIdTeam1 = 20001;
+    [HideInInspector] public BaseController baseTeam0;
+    [HideInInspector] public BaseController baseTeam1;
+    private Dictionary<ushort, BaseController> bases = new Dictionary<ushort, BaseController>();
+
+    #region === Simulation Flags ===
+    public void StartSimulation()
+    {
+        isSimulating = true;
+        Debug.Log("[BattleSimulator] Simulation started.");
+    }
+
+    public void StopSimulation()
+    {
+        isSimulating = false;
+        Debug.Log("[BattleSimulator] Simulation stopped.");
+    }
+
+    public bool IsGameReady() 
+    {
+        CheckIfGameReadyForSimulation();
+        return isGameReady;
+    }
+
+    private void CheckIfGameReadyForSimulation()
+    {
+        isGameReady = championTeam0 != null
+            && championTeam1 != null
+            && baseTeam0 != null
+            && baseTeam1 != null;
+    }
+    #endregion
+
+
+    #region === Initialization ===
     private void Awake()
     {
         if (Instance == null)
@@ -40,16 +82,6 @@ public class BattleSimulator_Server : NetworkBehaviour
     private void Start()
     {
         units = UnitSpawner.Instance.Units;
-    }
-
-    private void FixedUpdate()
-    {
-        if (!IsServer) return;
-
-        SimulateBattle_Champion();
-        SimulateBattle_Unit();
-        SimulateBattle_ApplyQueuedDamage(damageQueue);
-        BroadcastSnapshots();
     }
 
     public void SetChampionForSimulation(ChampionController championController, byte teamId)
@@ -64,9 +96,39 @@ public class BattleSimulator_Server : NetworkBehaviour
             championTeam1 = championController;
             champions[championIdTeam1] = championTeam1;
         }
+
+        CheckIfGameReadyForSimulation();
     }
 
+    public void SetBasesForSimulation(BaseController baseController, byte teamId)
+    {
+        if (teamId == 0)
+        {
+            baseTeam0 = baseController;
+            bases[baseIdTeam0] = baseTeam0;
+        }
+        else
+        {
+            baseTeam1 = baseController;
+            bases[baseIdTeam1] = baseTeam1;
+        }
+
+        CheckIfGameReadyForSimulation();
+    }
+    #endregion
+
+
     #region === Battle Simulation ===
+    private void FixedUpdate()
+    {
+        if (!IsServer || !isSimulating) return;
+
+        SimulateBattle_Champion();
+        SimulateBattle_Unit();
+        SimulateBattle_ApplyQueuedDamage(damageQueue);
+        BroadcastSnapshots();
+    }
+
     private void SimulateBattle_Champion()
     {
         if (champions == null || champions.Count <= 0) return;
@@ -195,14 +257,21 @@ public class BattleSimulator_Server : NetworkBehaviour
             // Step 1: Find the Nearest Enemy
             ushort? targetEnemyId = SimulateUnit_FindNearestEnemy(key, unit, out float closestDistance);
 
-            // Step 2: Handle Combat or Movement
+            // Step 2: Handle Combat or Base Collision/Attraction
             if (targetEnemyId.HasValue)
             {
                 SimulateUnit_HandleCombatOrMovement(ref unit, targetEnemyId.Value, closestDistance, ref isAttacking, ref isFighting, ref finalVelocity, damageQueue);
             }
             else
             {
-                SimulateUnit_HandleIdleMovement(ref unit, ref finalVelocity);
+                bool unitDestroyed = SimulateUnit_HandleBaseAttractionOrCollision(ref unit, key, ref finalVelocity);
+                if (unitDestroyed) continue; // Skip to next unit
+
+                // If not destroyed and not moving toward base, apply idle movement
+                if (finalVelocity == Vector2.zero)
+                {
+                    SimulateUnit_HandleIdleMovement(ref unit, ref finalVelocity);
+                }
             }
 
             // Step 3: Apply Repulsion Forces (Collision Avoidance)
@@ -343,6 +412,34 @@ public class BattleSimulator_Server : NetworkBehaviour
         unit.SetIsAttacking(isFighting);
     }
 
+    private bool SimulateUnit_HandleBaseAttractionOrCollision(ref UnitState unit, ushort unitId, ref Vector2 finalVelocity)
+    {
+        var enemyBase = GetEnemyBase(unit.GetTeamId());
+        UnitData unitData = ResourceAssets.Instance.GetUnitData(unit.GetUnitType());
+
+        float directionSign = (unit.GetTeamId() == 0) ? 1f : -1f;
+        float thresholdX = enemyBase.transform.position.x + (enemyBase.attractionOffset * directionSign);
+        bool beyondThreshold = (directionSign > 0) ? unit.GetPosition().x < thresholdX : unit.GetPosition().x > thresholdX;
+
+        if (beyondThreshold)
+        {
+            float distanceToBase = Vector2.Distance(unit.GetPosition(), enemyBase.GetPositionXZ());
+            if (distanceToBase <= enemyBase.collisionRange)
+            {
+                // Damage base and destroy unit
+                enemyBase.TakeDamage((ushort)unitData.attackDamage);
+                UnitSpawner.Instance.DestroyUnit(unitId);
+                return true; // Unit is destroyed
+            }
+
+            // Move toward base
+            Vector2 direction = (enemyBase.GetPositionXZ() - unit.GetPosition()).normalized;
+            finalVelocity += direction * unitData.unitSpeed;
+        }
+
+        return false; // Unit continues
+    }
+
     private void SimulateUnit_HandleIdleMovement(ref UnitState unit, ref Vector2 finalVelocity)
     {
         finalVelocity += unit.GetDafaultMovement();
@@ -424,6 +521,15 @@ public class BattleSimulator_Server : NetworkBehaviour
         damageQueue.Clear();
     }
     #endregion
+
+
+    #region === Battle Helper Functions ===
+    private BaseController GetEnemyBase(byte teamId)
+    {
+        return (teamId == 0) ? baseTeam1 : baseTeam0;
+    }
+    #endregion
+
 
     #region === Snapshot Broadcast ===
     private void BroadcastSnapshots()

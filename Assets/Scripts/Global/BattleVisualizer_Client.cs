@@ -13,26 +13,51 @@ using UnityEngine;
 public class BattleVisualizer_Client : MonoBehaviour
 {
     public static BattleVisualizer_Client Instance;
-    private Dictionary<ushort, Transform> unitTransforms = new Dictionary<ushort, Transform>();
-    private FixedSizeQueue<Snapshot> snapshotBuffer;
 
-    private const int MaxBufferSize = 5;
+    // visualization flags
+    private bool isVisualizing = false;
+
+    // visualization objs
+    private Dictionary<ushort, Transform> unitTransforms = new Dictionary<ushort, Transform>();
+
+    // visualization settings
     private const float InterpolationStepTime = 0.06f; // Fixed time to process one snapshot (60ms)
     private float lastInterpolationTime = 0f;
 
+    // snapshot settings
+    private const int MaxBufferSize = 5;
+    private FixedSizeQueue<Snapshot> snapshotBuffer;
+
+    
+    #region === Initialization
     private void Awake()
     {
         Instance = this;
         snapshotBuffer = new FixedSizeQueue<Snapshot>(MaxBufferSize);
     }
+    #endregion
 
-    public void ReceiveSnapshot(Snapshot snapshot)
+
+    #region === Visualization Flags ===
+    public void StartVisualization()
     {
-        snapshotBuffer.Enqueue(snapshot);
+        isVisualizing = true;
+        Debug.Log("[BattleVisualizer] Visualization started.");
     }
 
+    public void StopVisualization()
+    {
+        isVisualizing = false;
+        Debug.Log("[BattleVisualizer] Visualization stopped.");
+    }
+    #endregion
+
+
+    #region === Battle Visualization ===
     private void Update()
     {
+        if (!isVisualizing) return;
+
         if (Time.time - lastInterpolationTime < InterpolationStepTime)
             return; // Wait for the next interpolation step
 
@@ -172,4 +197,13 @@ public class BattleVisualizer_Client : MonoBehaviour
             }
         }
     }
+    #endregion
+
+
+    #region === Snapshot Receive ===
+    public void ReceiveSnapshot(Snapshot snapshot)
+    {
+        snapshotBuffer.Enqueue(snapshot);
+    }
+    #endregion
 }

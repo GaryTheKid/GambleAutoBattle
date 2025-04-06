@@ -88,7 +88,7 @@ GameObject:
   - component: {fileID: 4475709847753307752}
   - component: {fileID: -1266846327089172305}
   m_Layer: 0
-  m_Name: UnitPrefab
+  m_Name: Pref_Knight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -104,7 +104,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 1, z: 0.03}
-  m_LocalScale: {x: 2, y: 2, z: 2}
+  m_LocalScale: {x: 3, y: 3, z: 3}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5703255394578899694}
@@ -130,7 +130,7 @@ MonoBehaviour:
   avatarParent: {fileID: 799051330832631698}
   animator: {fileID: 5065182228116441927}
   audioSource: {fileID: -1266846327089172305}
-  deathFX: {fileID: 2793976638654692257, guid: 2da17b756576e7b4ca740c1253d64329, type: 3}
+  deathFX: {fileID: 2793976638654692257, guid: 4a6b79f17289b274d8c941dd47ccddbd, type: 3}
   teamId: 0
 --- !u!135 &4475709847753307752
 SphereCollider:
@@ -625,7 +625,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.58, y: 0.1, z: 0.58}
+  m_LocalScale: {x: 1.2, y: 0.1, z: 1.2}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5692759727434744086}

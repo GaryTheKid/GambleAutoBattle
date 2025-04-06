@@ -35,18 +35,33 @@ public class ClientInitializer : NetworkBehaviour
     {
         if (!IsOwner) return; // Only the owner should request champion spawn
 
-        RequestChampionSpawnServerRpc(NetworkManager.Singleton.LocalClientId, GameManager.Instance.teamId);
+        RequestBaseAndChampionSpawnServerRpc(NetworkManager.Singleton.LocalClientId, GameManager.Instance.teamId);
     }
 
     [ServerRpc]
-    private void RequestChampionSpawnServerRpc(ulong clientId, byte teamId)
+    private void RequestBaseAndChampionSpawnServerRpc(ulong clientId, byte teamId)
     {
+        // spawn base
+        GameObject basePrefab = ResourceAssets.Instance.GetBasePref;
+        GameObject baseInstance = Instantiate(basePrefab, teamId == 0 ? UnitSpawner.Instance.baseSpawnPos_Team0.position : UnitSpawner.Instance.baseSpawnPos_Team1.position, Quaternion.identity);
+
+        if (baseInstance.TryGetComponent(out NetworkObject baseNetworkObject))
+        {
+            baseNetworkObject.SpawnWithOwnership(clientId);
+        }
+        else
+        {
+            Debug.LogError("Base instantiation failed: No NetworkObject component.");
+        }
+
+
+        // spawn champion
         GameObject championPrefab = ResourceAssets.Instance.GetChampionPref(0);
         GameObject championInstance = Instantiate(championPrefab, teamId==0 ? UnitSpawner.Instance.championSpawnPos_Team0.position : UnitSpawner.Instance.championSpawnPos_Team1.position, Quaternion.identity);
 
-        if (championInstance.TryGetComponent(out NetworkObject networkObject))
+        if (championInstance.TryGetComponent(out NetworkObject championNetworkObject))
         {
-            networkObject.SpawnWithOwnership(clientId);
+            championNetworkObject.SpawnWithOwnership(clientId);
         }
         else
         {

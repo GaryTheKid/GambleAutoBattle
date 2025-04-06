@@ -1,12 +1,21 @@
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System.Collections;
+using TMPro;
 
 public class UI_UnitCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
-    public GameObject highlightObj;
+    [SerializeField] private CardData cardData;
+
+    public GameObject hoverHighlightObj;
     public GameObject selectionHighlightObj;
     public GameObject cardVisual;
+    public TextMeshProUGUI nameText;
+    public TextMeshProUGUI costText;
+    public TextMeshProUGUI amountText;
+    public Image image;
+    
     public float moveUpDistance = 20f;
     public float moveDuration = 0.2f;
 
@@ -27,7 +36,7 @@ public class UI_UnitCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     {
         originalPosition = cardVisual.transform.localPosition;
         hoverPosition = originalPosition + Vector3.up * moveUpDistance;
-        highlightObj.SetActive(false);
+        hoverHighlightObj.SetActive(false);
         selectionHighlightObj.SetActive(false);
     }
 
@@ -37,7 +46,7 @@ public class UI_UnitCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
         if (!isSelected)
         {
-            highlightObj.SetActive(true);
+            hoverHighlightObj.SetActive(true);
             StartMove(hoverPosition);
         }
     }
@@ -48,7 +57,7 @@ public class UI_UnitCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
         if (!isSelected)
         {
-            highlightObj.SetActive(false);
+            hoverHighlightObj.SetActive(false);
             StartMove(originalPosition);
         }
     }
@@ -71,7 +80,7 @@ public class UI_UnitCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
         if (selected)
         {
-            highlightObj.SetActive(false);
+            hoverHighlightObj.SetActive(false);
             selectionHighlightObj.SetActive(true);
             StartMove(hoverPosition);
         }
@@ -81,12 +90,12 @@ public class UI_UnitCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
             if (isPointerOver)
             {
-                highlightObj.SetActive(true);
+                hoverHighlightObj.SetActive(true);
                 StartMove(hoverPosition);
             }
             else
             {
-                highlightObj.SetActive(false);
+                hoverHighlightObj.SetActive(false);
                 StartMove(originalPosition);
             }
         }
@@ -113,5 +122,24 @@ public class UI_UnitCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         }
 
         cardVisual.transform.localPosition = targetPosition;
+    }
+
+    public void SetCardData(CardData data)
+    {
+        cardData = data;
+        SetCardUI();
+    }
+
+    public CardData GetCardData()
+    {
+        return cardData;
+    }
+
+    public void SetCardUI()
+    {
+        nameText.text = cardData.cardName;
+        costText.text = $"{cardData.cost}";
+        amountText.text = $"x{cardData.amount}";
+        image.sprite = cardData.cardSprite;
     }
 }

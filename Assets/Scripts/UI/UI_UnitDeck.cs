@@ -20,6 +20,9 @@ public class UI_UnitDeck : MonoBehaviour
 
         selectedCard = newSelection;
         selectedCard.SetSelected(true);
+
+        // Cache selected card data in DeckManager
+        DeckManager.Instance.selectedCardData = selectedCard.GetCardData();
     }
 
     public void DeselectCard()
@@ -28,6 +31,9 @@ public class UI_UnitDeck : MonoBehaviour
         {
             selectedCard.SetSelected(false);
             selectedCard = null;
+
+            // Cache selected card data in DeckManager
+            DeckManager.Instance.selectedCardData = null;
         }
     }
 
@@ -36,11 +42,14 @@ public class UI_UnitDeck : MonoBehaviour
     {
         if (selectedCard != null)
         {
-            // TODO: Trigger card functionality here
+            // TODO: Trigger card functionality/vfx here
             Debug.Log("Using card: " + selectedCard.name);
 
             DestroyCard(selectedCard);
             selectedCard = null;
+
+            // Cache selected card data in DeckManager
+            DeckManager.Instance.selectedCardData = null;
         }
     }
 
@@ -51,6 +60,10 @@ public class UI_UnitDeck : MonoBehaviour
         {
             cards.Remove(card);
             Destroy(card.gameObject);
+
+            // Cache selected card data in DeckManager
+            if (selectedCard == card)
+                DeckManager.Instance.selectedCardData = null;
         }
     }
 
@@ -64,6 +77,18 @@ public class UI_UnitDeck : MonoBehaviour
         cards.Add(newCard);
 
         // Handle compression logic if over the limit
+        CompressIfNeeded();
+    }
+
+    // Add a new card with CardData
+    public void AddCard(CardData data)
+    {
+        GameObject newCardObj = Instantiate(cardPrefab, cardContainer);
+        UI_UnitCard newCard = newCardObj.GetComponent<UI_UnitCard>();
+        newCard.deckManager = this;
+        newCard.SetCardData(data); // Set visuals based on card data
+
+        cards.Add(newCard);
         CompressIfNeeded();
     }
 

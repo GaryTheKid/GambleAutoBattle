@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 6665500448243020934}
   - component: {fileID: 2675634261256486149}
   m_Layer: 0
-  m_Name: UnitDeadBody
+  m_Name: VFX_Death_Footman
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

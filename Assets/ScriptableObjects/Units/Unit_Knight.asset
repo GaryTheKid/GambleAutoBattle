@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 73fea9ac0ac94e2418ca813f27a70c08, type: 3}
-  m_Name: TestUnit
+  m_Name: Unit_Knight
   m_EditorClassIdentifier: 
-  unitId: 0
-  unitName: Default Unit
+  unitId: 1
+  unitName: Knight
   detectionRange: 10
-  attackRange: 5
-  attackCooldown: 1
-  attackDamage: 10
-  separationDistance: 2.5
-  repulsionStrength: 0.02
-  repulsionStrengthCombatModifier: 0.1
-  repulsionStrengthIdleModifier: 0.4
-  unitSpeed: 0.1
-  pref: {fileID: 2310556834816511740, guid: 41d063d8361cc1645a17c6a0294f272e, type: 3}
+  attackRange: 8
+  attackCooldown: 1.5
+  attackDamage: 30
+  separationDistance: 3.5
+  repulsionStrength: 0.03
+  repulsionStrengthCombatModifier: 0.2
+  repulsionStrengthIdleModifier: 0.5
+  unitSpeed: 0.12
+  pref: {fileID: 2310556834816511740, guid: e469e99b0f623c04d901956440fb1a2e, type: 3}
