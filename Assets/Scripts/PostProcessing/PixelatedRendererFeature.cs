@@ -7,7 +7,7 @@ public class PixelationRendererFeature : ScriptableRendererFeature
     [Serializable]
     public class PixelationSettings
     {
-        [Range(1, 64)] public int pixelSize = 8;  // Size of each pixel block in screen pixels
+        [Range(1f, 64f)] public float pixelSize = 2.5f;  // Size of each pixel block in screen pixels
     }
 
     [SerializeField] private PixelationSettings settings = new PixelationSettings();

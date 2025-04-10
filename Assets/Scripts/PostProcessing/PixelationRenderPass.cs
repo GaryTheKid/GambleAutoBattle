@@ -43,7 +43,7 @@ public class PixelationRenderPass : ScriptableRenderPass
                                                                                k_TempTargetName, false);
 
         // Set the pixel size parameter on the material each frame (using either volume override or default)
-        pixelationMaterial.SetFloat(_PixelSizeID, Mathf.Max(1, settings.pixelSize));
+        pixelationMaterial.SetFloat(_PixelSizeID, Mathf.Max(0.1f, settings.pixelSize));
 
         // Ensure source and destination handles are valid before adding passes
         if (!source.IsValid() || !tempTexture.IsValid())
