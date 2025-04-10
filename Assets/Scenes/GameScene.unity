@@ -93,8 +93,8 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 20201, guid: 0000000000000000f000000000000000, type: 0}
-  m_LightingSettings: {fileID: 0}
+  m_LightingDataAsset: {fileID: 112000000, guid: d64c3d1af79c4fd4bb582a2a6b6beb03, type: 2}
+  m_LightingSettings: {fileID: 4890085278179872738, guid: 64fff9be8e25c344d9960e59c52ad99f, type: 2}
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -2844,6 +2844,10 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 7573793671822630179, guid: 4985e8dc2b48c094d8fe83e109f3ad5f, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8156601115693903453, guid: 4985e8dc2b48c094d8fe83e109f3ad5f, type: 3}
       propertyPath: m_Name
       value: MercenaryCamp
@@ -3531,13 +3535,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.5828324, y: 0, z: 0, w: 0.81259245}
-  m_LocalPosition: {x: -3.4, y: 69.4, z: -33.4}
+  m_LocalRotation: {x: 0.605294, y: 0, z: 0, w: 0.79600203}
+  m_LocalPosition: {x: 0.7, y: 74.6, z: -29.3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 71.3, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 74.5, y: 0, z: 0}
 --- !u!114 &330585547
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4030,13 +4034,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 410087039}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.40821788, y: -0.23456968, z: 0.10938163, w: 0.8754261}
+  m_LocalRotation: {x: 0.035096228, y: -0.40484288, z: 0.015552504, w: 0.9135801}
   m_LocalPosition: {x: 0, y: 3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+  m_LocalEulerAnglesHint: {x: 4.4, y: -47.8, z: 0}
 --- !u!114 &410087042
 MonoBehaviour:
   m_ObjectHideFlags: 0
