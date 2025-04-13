@@ -6,7 +6,7 @@ public class UnitGameObject : MonoBehaviour
 {
     [SerializeField] private Image hpBar;
     [SerializeField] private TextMeshProUGUI hpText;
-    [SerializeField] private MeshRenderer meshRenderer;
+    [SerializeField] private MeshRenderer teamIndicator;
     [SerializeField] private Transform avatarParent;
     [SerializeField] private Animator animator;
     [SerializeField] private AudioSource audioSource;
@@ -17,7 +17,7 @@ public class UnitGameObject : MonoBehaviour
 
     public void UpdateTeam(byte teamId)
     {
-        meshRenderer.material.color = ResourceAssets.Instance.GetTeamColor(teamId);
+        teamIndicator.material.SetColor("_RingColor", ResourceAssets.Instance.GetTeamColor(teamId));
 
         if (teamId == 0)
         {

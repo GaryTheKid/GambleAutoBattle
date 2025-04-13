@@ -15,6 +15,9 @@ public class BaseController : NetworkBehaviour
     [Header("Indentity")]
     public byte baseId;
     public MeshRenderer teamIndicator;
+    public Transform baseVisual;
+    [SerializeField] private float redRotY;
+    [SerializeField] private float blueRotY;
 
     [Header("Collision Settings")]
     public float attractionOffset = 8f;
@@ -62,6 +65,7 @@ public class BaseController : NetworkBehaviour
     private void UpdateTeamVisual(byte teamId)
     {
         teamIndicator.material.SetColor("_RingColor", ResourceAssets.Instance.GetTeamColor(teamId));
+        baseVisual.transform.rotation = (teamId==0)? Quaternion.Euler(0f, blueRotY, 0f) : Quaternion.Euler(0f, redRotY, 0f);
     }
 
     public void TakeDamage(ushort damage)

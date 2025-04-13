@@ -19,7 +19,7 @@ public class ChampionController : NetworkBehaviour
     [Header("Indentity")]
     public byte championId;
     public string championName = "Default Champion";
-    public MeshRenderer teamIndicator;
+    [SerializeField] private MeshRenderer teamIndicator;
 
     [Header("Combat Settings")]
     public NetworkVariable<bool> isAttacking = new NetworkVariable<bool>(false);
@@ -43,7 +43,6 @@ public class ChampionController : NetworkBehaviour
         attack
     }
     public AvatarAnimationState avatarAnimationState = AvatarAnimationState.idle;
-
 
     [Header("UI")]
     [SerializeField] private Image hpFill;
@@ -204,7 +203,7 @@ public class ChampionController : NetworkBehaviour
 
     private void UpdateTeamVisual(byte teamId)
     {
-        teamIndicator.material.color = ResourceAssets.Instance.GetTeamColor(teamId);
+        teamIndicator.material.SetColor("_RingColor", ResourceAssets.Instance.GetTeamColor(teamId));
         avatarParent.LookAt(GameObject.Find("BattlefieldCenter").transform);
     }
 
