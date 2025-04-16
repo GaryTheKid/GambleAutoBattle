@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 63d40d1732f908a4780c1232c9e97b87
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures: []
+  nonModifiableTextures: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 182365
+  packageName: Top Down - Fantasy Forest (URP)
+  packageVersion: 1.2.2
+  assetPath: Assets/TriForge Assets/Top Down - Common Files/Shaders/TriForgeFlag.shader
+  uploadId: 677474

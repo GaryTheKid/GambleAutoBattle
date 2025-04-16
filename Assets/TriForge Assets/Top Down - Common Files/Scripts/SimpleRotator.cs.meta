@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: ddc3bcde79f100846a964725b20703b0
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 182365
+  packageName: Top Down - Fantasy Forest (URP)
+  packageVersion: 1.2.2
+  assetPath: Assets/TriForge Assets/Top Down - Common Files/Scripts/SimpleRotator.cs
+  uploadId: 677474

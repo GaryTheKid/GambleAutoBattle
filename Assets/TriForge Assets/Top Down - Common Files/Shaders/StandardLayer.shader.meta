@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 09cff26b5607c97459f007c756fb0da3
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures: []
+  nonModifiableTextures: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 182365
+  packageName: Top Down - Fantasy Forest (URP)
+  packageVersion: 1.2.2
+  assetPath: Assets/TriForge Assets/Top Down - Common Files/Shaders/StandardLayer.shader
+  uploadId: 677474
