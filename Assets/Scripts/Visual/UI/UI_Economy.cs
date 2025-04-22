@@ -11,13 +11,7 @@ public class UI_Economy : MonoBehaviour
 
     private void OnEnable()
     {
-        if (EconomyManager.Instance != null)
-        {
-            EconomyManager.Instance.OnGoldUpdate += UpdateGoldUI;
-            EconomyManager.Instance.OnNotEnoughGold += ShowNotEnoughGoldWarning;
-        }
-            
-        warningText.gameObject.SetActive(false);
+        StartCoroutine(SubscribeGoldEvents());
     }
 
     private void OnDisable()
@@ -27,6 +21,19 @@ public class UI_Economy : MonoBehaviour
             EconomyManager.Instance.OnGoldUpdate -= UpdateGoldUI;
             EconomyManager.Instance.OnNotEnoughGold -= ShowNotEnoughGoldWarning;
         }
+    }
+
+    private IEnumerator SubscribeGoldEvents()
+    {
+        yield return new WaitUntil(() => { return EconomyManager.Instance != null; });
+
+        if (EconomyManager.Instance != null)
+        {
+            EconomyManager.Instance.OnGoldUpdate += UpdateGoldUI;
+            EconomyManager.Instance.OnNotEnoughGold += ShowNotEnoughGoldWarning;
+        }
+
+        warningText.gameObject.SetActive(false);
     }
 
     private void UpdateGoldUI(int current, int max, float rate)

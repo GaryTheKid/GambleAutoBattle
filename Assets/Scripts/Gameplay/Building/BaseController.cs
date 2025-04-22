@@ -1,4 +1,3 @@
-using System.Collections;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
@@ -13,7 +12,6 @@ public class BaseController : NetworkBehaviour
     public NetworkVariable<bool> isDead = new NetworkVariable<bool>(false);
 
     [Header("Indentity")]
-    public byte baseId;
     public MeshRenderer teamIndicator;
     public Transform baseVisual;
     [SerializeField] private float redRotY;
@@ -38,7 +36,7 @@ public class BaseController : NetworkBehaviour
 
         if (IsOwner)
         {
-            UpdateTeamServerRpc(GameManager.Instance.teamId);
+            UpdateTeamServerRpc(GameManager.Instance.myTeamId);
         }
         if (!IsOwner && !IsServer)
         {

@@ -39,6 +39,7 @@ public struct UnitState : INetworkSerializable
         Float16Converter.UnpackFloat((ushort)((PackedData >> 13) & 0xFFFF))
     );
     public ushort GetHP() => (ushort)((PackedData >> 2) & 0x7FF);
+    public ushort GetMaxHP() => ResourceAssets.Instance.GetUnitData(GetUnitType()).maxHp;
     public bool GetIsAttacking() => ((PackedData >> 1) & 0x1) == 1;
     public byte GetTeamId() => (byte)(PackedData & 0x1);
     public Vector2 GetDafaultMovement() => new Vector2(GetTeamId() == 0 ? 

@@ -44,17 +44,13 @@ public class UnitSpawner : NetworkBehaviour
                 if (hit.collider.CompareTag("SpawnRegion"))
                 {
                     byte teamId = hit.collider.GetComponent<SpawnRegion>().teamId;
-                    if (teamId != GameManager.Instance.teamId)
+                    if (teamId != GameManager.Instance.myTeamId)
                         return;
 
                     // Attempt to use the selected card
                     CardData cardData = DeckManager.Instance.UseSelectedCard();
                     if (cardData == null)
                         return;
-                    else
-                    {
-                        print(132);
-                    }
 
                     Vector2 spawnPos = new Vector2(hit.point.x, hit.point.z);
                     RequestSpawnCardUnitsServerRpc(cardData.amount, spawnPos, teamId, cardData.unitType);
@@ -75,6 +71,18 @@ public class UnitSpawner : NetworkBehaviour
         }
     }
 
+    public void SpawnUnit(Vector2 position, byte team, byte unitType)
+    {
+        if (unitIdPool.TryGetId(out ushort unitId))
+        {
+            units[unitId] = new UnitState(unitId, position, ResourceAssets.Instance.GetUnitData(unitType).maxHp, team, false, unitType);
+        }
+        else
+        {
+            Debug.LogWarning("Unit spawn failed: No available IDs.");
+        }
+    }
+
     public void DestroyUnit(ushort unitId)
     {
         if (units.ContainsKey(unitId))
@@ -87,9 +95,9 @@ public class UnitSpawner : NetworkBehaviour
 
     public void testspawn()
     {
-        RequestSpawnUnitsServerRpc(5, GameManager.Instance.teamId);
+        RequestSpawnUnitsServerRpc(5, GameManager.Instance.myTeamId);
 
-        print(GameManager.Instance.teamId);
+        print(GameManager.Instance.myTeamId);
     }
 
     public void testdestroy()
@@ -97,7 +105,7 @@ public class UnitSpawner : NetworkBehaviour
         RequestDestroyUnitsServerRpc(5);
     }
 
-    #region === DEBUG ===
+    #region === Server Rpc Calls ===
     [ServerRpc(RequireOwnership = false)]
     public void RequestSpawnUnitsServerRpc(int count, byte teamId)
     {
@@ -105,21 +113,21 @@ public class UnitSpawner : NetworkBehaviour
         {
             if (teamId == 1)
             {
-                SpawnUnit(new Vector2(-60, 4 * i - count * 2 + Random.Range(-5, 5)), 100, teamId, 0);
+                SpawnUnit(new Vector2(-60, 4 * i - count * 2 + Random.Range(-5, 5)), teamId, 0);
             }
             else
             {
-                SpawnUnit(new Vector2(60, 4 * i - count * 2 + Random.Range(-5, 5)), 100, teamId, 0);
+                SpawnUnit(new Vector2(60, 4 * i - count * 2 + Random.Range(-5, 5)), teamId, 0);
             }
         }
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public void RequestSpawnUnitAtPositionServerRpc(int count, Vector2 spawnPos, byte teamId)
+    public void RequestSpawnUnitAtPositionServerRpc(int count, Vector2 spawnPos, byte teamId, byte unitType)
     {
         for (int i = 0; i < count; i++)
         {
-            SpawnUnit(spawnPos + new Vector2(Random.Range(-5, 5), Random.Range(-5, 5)), 100, teamId, 0);
+            SpawnUnit(spawnPos, teamId, unitType);
         }
     }
 
@@ -129,7 +137,7 @@ public class UnitSpawner : NetworkBehaviour
         for (int i = 0; i < count; i++)
         {
             Vector2 offset = new Vector2(Random.Range(-5, 5), Random.Range(-5, 5));
-            SpawnUnit(spawnPos + offset, 100, teamId, unitType);
+            SpawnUnit(spawnPos + offset, teamId, unitType);
         }
     }
 
