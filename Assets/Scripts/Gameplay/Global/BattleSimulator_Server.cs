@@ -41,6 +41,9 @@ public class BattleSimulator_Server : NetworkBehaviour
     [HideInInspector] public BaseController baseTeam1;
     private Dictionary<ushort, BaseController> bases = new Dictionary<ushort, BaseController>();
 
+    // buildings
+    [HideInInspector] public List<ICapturable> capturableBuildings = new List<ICapturable>();
+
     #region === Simulation Flags ===
     public void StartSimulation()
     {
@@ -125,10 +128,12 @@ public class BattleSimulator_Server : NetworkBehaviour
 
         SimulateBattle_Champion();
         SimulateBattle_Unit();
+        SimulateBattle_CapturableBuilding();
         SimulateBattle_ApplyQueuedDamage(damageQueue);
         BroadcastSnapshots();
     }
 
+    // ------------------------------- Simulate Champion ------------------------------- // 
     private void SimulateBattle_Champion()
     {
         if (champions == null || champions.Count <= 0) return;
@@ -242,6 +247,8 @@ public class BattleSimulator_Server : NetworkBehaviour
         /////////////////////////////// Attacking Champion //////////////////////////////////
     }
 
+
+    // ------------------------------- Simulate Unit ------------------------------- // 
     private void SimulateBattle_Unit()
     {
         var keys = units.Keys;
@@ -480,6 +487,51 @@ public class BattleSimulator_Server : NetworkBehaviour
         velocityChanges.Clear();
     }
 
+
+    // ------------------------------- Simulate Building ------------------------------- //
+    private void SimulateBattle_CapturableBuilding()
+    {
+        foreach (var building in capturableBuildings)
+        {
+            int team0Count = 0;
+            int team1Count = 0;
+
+            Vector2 buildingPos = building.GetBuildingPos();
+            float captureRadius = building.GetCapturingRadius();
+
+            // Check units
+            foreach (var unit in units.Values)
+            {
+                if (Vector2.Distance(unit.GetPosition(), buildingPos) <= captureRadius)
+                {
+                    if (unit.GetTeamId() == 0) team0Count++;
+                    else if (unit.GetTeamId() == 1) team1Count++;
+                }
+            }
+
+            // Check champions
+            if (championTeam0 != null && Vector2.Distance(championTeam0.GetPositionXZ(), buildingPos) <= captureRadius)
+                team0Count++;
+            if (championTeam1 != null && Vector2.Distance(championTeam1.GetPositionXZ(), buildingPos) <= captureRadius)
+                team1Count++;
+
+            if (team0Count > 0 && team1Count > 0)
+            {
+                building.Contesting();
+            }
+            else if (team0Count > 0)
+            {
+                building.Capturing(0);
+            }
+            else if (team1Count > 0)
+            {
+                building.Capturing(1);
+            }
+        }
+    }
+
+
+    // ------------------------------- DamageQueue ------------------------------- //
     private void SimulateBattle_ApplyQueuedDamage(Dictionary<ushort, int> damageQueue)
     {
         /////////////////////////////// Apply Damage to Champion //////////////////////////////////
@@ -520,6 +572,7 @@ public class BattleSimulator_Server : NetworkBehaviour
 
         damageQueue.Clear();
     }
+
     #endregion
 
 

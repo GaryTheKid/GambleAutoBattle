@@ -51,7 +51,7 @@ public class PixelationRendererFeature : ScriptableRendererFeature
     {
         if (pixelationMaterial != null)
         {
-            Destroy(pixelationMaterial);
+            DestroyImmediate(pixelationMaterial);
             pixelationMaterial = null;
         }
     }

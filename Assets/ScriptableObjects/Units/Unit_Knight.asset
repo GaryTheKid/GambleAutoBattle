@@ -17,7 +17,8 @@ MonoBehaviour:
   detectionRange: 10
   attackRange: 8
   attackCooldown: 1.5
-  attackDamage: 30
+  attackDamage: 20
+  maxHp: 100
   separationDistance: 3.5
   repulsionStrength: 0.03
   repulsionStrengthCombatModifier: 0.2

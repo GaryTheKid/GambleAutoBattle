@@ -71,7 +71,7 @@ public class ChampionController : NetworkBehaviour
 
         if (IsOwner)
         {
-            UpdateTeamServerRpc(GameManager.Instance.teamId);
+            UpdateTeamServerRpc(GameManager.Instance.myTeamId);
         }
         if (!IsOwner && !IsServer)
         {

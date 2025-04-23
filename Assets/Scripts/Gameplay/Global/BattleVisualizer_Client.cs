@@ -190,10 +190,11 @@ public class BattleVisualizer_Client : MonoBehaviour
         {
             ushort unitId = kvp.Key;
             ushort unitHp = kvp.Value.GetHP();
+            ushort unitMaxHp = kvp.Value.GetMaxHP();
 
             if (unitTransforms.TryGetValue(unitId, out Transform unitTransform))
             {
-                unitTransform.GetComponent<UnitGameObject>().UpdateHp(unitHp, 100f);
+                unitTransform.GetComponent<UnitGameObject>().UpdateHp(unitHp, unitMaxHp);
             }
         }
     }

@@ -18,6 +18,7 @@ MonoBehaviour:
   attackRange: 5
   attackCooldown: 1
   attackDamage: 10
+  maxHp: 50
   separationDistance: 2.5
   repulsionStrength: 0.02
   repulsionStrengthCombatModifier: 0.1

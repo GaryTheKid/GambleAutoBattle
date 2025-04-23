@@ -14,7 +14,7 @@ public class GameManager : NetworkBehaviour
     public static GameManager Instance;
 
     [Header("Team")]
-    public byte teamId;
+    public byte myTeamId;
 
     [SerializeField] private GameState currentGameState = GameState.Preparation;
     public GameState CurrentGameState => currentGameState;
@@ -111,7 +111,7 @@ public class GameManager : NetworkBehaviour
     [ClientRpc]
     public void SendGameResultClientRpc(byte losingTeamId)
     {
-        if (losingTeamId == teamId)
+        if (losingTeamId == myTeamId)
         {
             loseText.SetActive(true);
             Debug.Log($"[GameManager] You Lose!");

@@ -26,16 +26,16 @@ public class ClientInitializer : NetworkBehaviour
         }
 
         byte assignedTeamId = (byte)playerIndex; // Assign team ID based on join order
-        GameManager.Instance.teamId = assignedTeamId;
+        GameManager.Instance.myTeamId = assignedTeamId;
 
-        Debug.Log("Assign Team Id: " + GameManager.Instance.teamId);
+        Debug.Log("Assign Team Id: " + GameManager.Instance.myTeamId);
     }
 
     private void InstantiateChampion()
     {
         if (!IsOwner) return; // Only the owner should request champion spawn
 
-        RequestBaseAndChampionSpawnServerRpc(NetworkManager.Singleton.LocalClientId, GameManager.Instance.teamId);
+        RequestBaseAndChampionSpawnServerRpc(NetworkManager.Singleton.LocalClientId, GameManager.Instance.myTeamId);
     }
 
     [ServerRpc]

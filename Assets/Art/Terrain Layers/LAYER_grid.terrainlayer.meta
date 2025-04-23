@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 288a018e270cf1a4a9860c3eb31eaa14
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 8574412962073106934
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 182365
+  packageName: Top Down - Fantasy Forest (URP)
+  packageVersion: 1.2.2
+  assetPath: Assets/TriForge Assets/Top Down - Common Files/Terrain Layers/LAYER_grid.terrainlayer
+  uploadId: 677474

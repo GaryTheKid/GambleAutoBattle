@@ -12,6 +12,7 @@ public class UnitData : ScriptableObject
     public float attackRange = 5.0f;            // Minimum distance to attack
     public float attackCooldown = 1.0f;         // Time between attacks
     public int attackDamage = 10;               // Damage per attack
+    public ushort maxHp = 100;
 
     [Header("Movement & Collision Settings")]
     public float separationDistance = 2.5f;                 // Min distance before push force applies
