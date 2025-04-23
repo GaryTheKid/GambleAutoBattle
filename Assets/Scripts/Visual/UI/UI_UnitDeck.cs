@@ -21,6 +21,9 @@ public class UI_UnitDeck : MonoBehaviour
         selectedCard = newSelection;
         selectedCard.SetSelected(true);
 
+        // show the card deploy region
+        GameManager.Instance.mySpawnRegion.ShowVisual();
+
         // Cache selected card data in DeckManager
         DeckManager.Instance.selectedCardData = selectedCard.GetCardData();
     }
@@ -31,6 +34,9 @@ public class UI_UnitDeck : MonoBehaviour
         {
             selectedCard.SetSelected(false);
             selectedCard = null;
+
+            // hide the card deploy region
+            GameManager.Instance.mySpawnRegion.HideVisual();
 
             // Cache selected card data in DeckManager
             DeckManager.Instance.selectedCardData = null;
@@ -47,6 +53,9 @@ public class UI_UnitDeck : MonoBehaviour
 
             DestroyCard(selectedCard);
             selectedCard = null;
+
+            // hide the card deploy region
+            GameManager.Instance.mySpawnRegion.HideVisual();
 
             // Cache selected card data in DeckManager
             DeckManager.Instance.selectedCardData = null;

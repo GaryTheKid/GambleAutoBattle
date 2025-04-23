@@ -15,11 +15,17 @@ public class GameManager : NetworkBehaviour
 
     [Header("Team")]
     public byte myTeamId;
+    public SpawnRegion mySpawnRegion;
 
     [SerializeField] private GameState currentGameState = GameState.Preparation;
     public GameState CurrentGameState => currentGameState;
 
+    [Header("Spawn Region")]
+    public SpawnRegion blueSpawnRegion;
+    public SpawnRegion redSpawnRegion;
+
     [Header("UI")]
+    public GameObject battleBeginText;
     public GameObject winText;
     public GameObject loseText;
 
@@ -87,6 +93,7 @@ public class GameManager : NetworkBehaviour
     [ClientRpc]
     private void StartBattleVisualizationClientRpc()
     {
+        battleBeginText.SetActive(true);
         BattleVisualizer_Client.Instance.StartVisualization();
     }
 

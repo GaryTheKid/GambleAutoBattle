@@ -66,6 +66,16 @@ public class EconomyManager : MonoBehaviour
         return true;
     }
 
+    public bool HasEnoughGold(int cost)
+    {
+        if (cost <= 0 || currentGold < cost)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
     public void EarnGold(int amount)
     {
         if (amount <= 0 || currentGold >= maxGold)

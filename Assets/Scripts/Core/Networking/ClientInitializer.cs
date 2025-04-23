@@ -27,6 +27,7 @@ public class ClientInitializer : NetworkBehaviour
 
         byte assignedTeamId = (byte)playerIndex; // Assign team ID based on join order
         GameManager.Instance.myTeamId = assignedTeamId;
+        GameManager.Instance.mySpawnRegion = assignedTeamId == 0 ? GameManager.Instance.blueSpawnRegion : GameManager.Instance.redSpawnRegion;
 
         Debug.Log("Assign Team Id: " + GameManager.Instance.myTeamId);
     }

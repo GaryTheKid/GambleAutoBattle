@@ -38,7 +38,7 @@ public class UI_Economy : MonoBehaviour
 
     private void UpdateGoldUI(int current, int max, float rate)
     {
-        goldText.text = $"{current}/{max}  +{rate}/sec";
+        goldText.text = $"{current}/{max}\n+{rate}/sec";
     }
 
     private void ShowNotEnoughGoldWarning()

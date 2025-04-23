@@ -6,6 +6,10 @@ public class UnitSpawner : NetworkBehaviour
 {
     public static UnitSpawner Instance { get; private set; }
 
+    [Header("UI")]
+    public Transform unitDeployBeacon_Succeed;
+    public Transform unitDeployBeacon_Fail;
+
     [Header("Base Spawn Pos")]
     public Transform baseSpawnPos_Team0;
     public Transform baseSpawnPos_Team1;
@@ -36,28 +40,53 @@ public class UnitSpawner : NetworkBehaviour
         if (GameManager.Instance.CurrentGameState != GameState.InBattle)
             return;
 
-        if (Input.GetMouseButtonDown(0)) // Left mouse click
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(ray, out RaycastHit hit))
         {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out RaycastHit hit))
+            if (hit.collider.CompareTag("SpawnRegion"))
             {
-                if (hit.collider.CompareTag("SpawnRegion"))
+                byte teamId = hit.collider.GetComponent<SpawnRegion>().teamId;
+                if (teamId == GameManager.Instance.myTeamId)
                 {
-                    byte teamId = hit.collider.GetComponent<SpawnRegion>().teamId;
-                    if (teamId != GameManager.Instance.myTeamId)
-                        return;
+                    CardData selectedCard = DeckManager.Instance.selectedCardData;
+                    if (selectedCard != null)
+                    {
+                        // Valid hover, show beacon
+                        if (EconomyManager.Instance.HasEnoughGold(selectedCard.cost))
+                        {
+                            if (!unitDeployBeacon_Succeed.gameObject.activeSelf) unitDeployBeacon_Succeed.gameObject.SetActive(true);
+                            if (unitDeployBeacon_Fail.gameObject.activeSelf) unitDeployBeacon_Fail.gameObject.SetActive(false);
+                        }
+                        else
+                        {
+                            if (unitDeployBeacon_Succeed.gameObject.activeSelf) unitDeployBeacon_Succeed.gameObject.SetActive(false);
+                            if (!unitDeployBeacon_Fail.gameObject.activeSelf) unitDeployBeacon_Fail.gameObject.SetActive(true);
+                        }
+                            
+                        unitDeployBeacon_Succeed.position = hit.point;
+                        unitDeployBeacon_Fail.position = hit.point;
 
-                    // Attempt to use the selected card
-                    CardData cardData = DeckManager.Instance.UseSelectedCard();
-                    if (cardData == null)
+                        // Also check for click to deploy
+                        if (Input.GetMouseButtonDown(0))
+                        {
+                            CardData cardToUse = DeckManager.Instance.UseSelectedCard();
+                            if (cardToUse != null)
+                            {
+                                Vector2 spawnPos = new Vector2(hit.point.x, hit.point.z);
+                                RequestSpawnCardUnitsServerRpc(cardToUse.amount, spawnPos, teamId, cardToUse.unitType);
+                            }
+                        }
                         return;
-
-                    Vector2 spawnPos = new Vector2(hit.point.x, hit.point.z);
-                    RequestSpawnCardUnitsServerRpc(cardData.amount, spawnPos, teamId, cardData.unitType);
+                    }
                 }
             }
         }
+
+        // Hide if no valid hover/selection
+        if (unitDeployBeacon_Succeed.gameObject.activeSelf) unitDeployBeacon_Succeed.gameObject.SetActive(false);
+        if (unitDeployBeacon_Fail.gameObject.activeSelf) unitDeployBeacon_Fail.gameObject.SetActive(false);
     }
+
 
     public void SpawnUnit(Vector2 position, ushort hp, byte team, byte unitType)
     {

@@ -52,6 +52,8 @@ public class BGMManager : MonoBehaviour
 
     public void OnBattleStarted()
     {
+        PlayBattleStart();
+
         if (isBattleStarted) return;
 
         isBattleStarted = true;
